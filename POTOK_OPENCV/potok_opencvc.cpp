@@ -1,4 +1,3 @@
-
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
 #include <opencv2/opencv.hpp>
@@ -18,6 +17,9 @@ bool isMainRunning;
 bool is_frame_prepare;
 string window_name = "Video";
 
+void GoStep(int &x, int &y){
+	
+}
 void run_capture()
 {
     VideoCapture capture(0);
@@ -64,6 +66,7 @@ void detect_and_display()
 	
     bool isExist;
     int stell;
+    int x,y;
     time_t timeBegin = time(0);
     
     while (isMainRunning)
@@ -90,13 +93,14 @@ void detect_and_display()
 			{			
 				Point  center(faces[i].x + faces[i].width*0.5,faces[i].y + faces[i].height*0.5);   
 				circle(frame, center , 0.5, Scalar(0, 255, 0), 1, 8, 0);        
-			}			Size(),3.6,3.3);
-			resize(frame,buf,
+				x = faces[i].x + faces[i].width*0.5;
+				y = faces[i].y + faces[i].height*0.5;		
+			}			
+			resize(frame,buf,Size(),3.6,3.3);
 			putText(buf, cv::format("FPS=%d", fps ), Point(15, 30), FONT_HERSHEY_SIMPLEX, 0.5, Scalar(0,255,0));
-			putText(buf, cv::format("FPS=%d", fps ), Point(30, 30), FONT_HERSHEY_SIMPLEX, 0.5, Scalar(0,255,0));
 			
             imshow(window_name, buf);
-            
+            GoStep(x,y);
             c = waitKey(1);
             if( (char)c == 'c' ) {
                 break;
@@ -108,6 +112,7 @@ void detect_and_display()
         }
     }
 }
+
 
 int main()
 {
