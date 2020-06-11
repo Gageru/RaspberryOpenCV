@@ -33,6 +33,7 @@ string window_name = "Video";
 
 void GoStep(int &x, int &y){
 vx = 0 ;
+cout << x << " " << y << endl;
 	if (x <= xb && y <= yb){ //относительно прошлой переменной
 		dir1 = 1;
 		dir2 = 1;
@@ -48,7 +49,7 @@ vx = 0 ;
 		dir1 = 0;
 		dir2 = 1;
 		a1 = 4.2 * x /80;
-		a1 = 8.2 - a1;
+		a1 = a1 - 4.2;
 		step1 = a1 * 4096 / 360 ;
 		a2 = 3.15 * y / 60;
 		a2 = 3.15 - a2;
@@ -62,7 +63,7 @@ vx = 0 ;
 		a1 = 4.2 - a1 ;
 		step1 = a1 * 4096 / 360;
 		a2 = 3.15 * y / 60;
-		a2 = a2 - 6.3;
+		a2 = a2 - 3.15;
 		step2 = a2 * 2048 / 360 ;
 		vx = 1;
 		
@@ -71,17 +72,19 @@ vx = 0 ;
 		dir1 = 0;
 		dir2 = 0; 
 		a1 = 4,2 * x / 80;
-		a1 = a1 - 8.41 ;
+		a1 = a1 - 4.2 ;
 		step1 = a1 * 4096 / 360;
 		a2 = 3.15 * y / 60;
-		a2 = a2 - 6.3;
+		a2 = a2 - 3.15;
 		step2 = a2 * 2048 / 360 ;
 		vx = 1;
 	}
+cout << a1 << " " << a2 << endl;
+cout << step1 << " " << step2 << endl;
 	if (vx == 1){
 		digitalWrite (LED5, dir1);
 		digitalWrite (LED10, dir2);
-		if (step1  <= step2) // пиши через цикл while(1)
+		if (step1 / 2  <= step2) // пиши через цикл while(1)
 		for (int i = 0 ; i <step2 ; i++){
 			if (i % step2 / step1 == 0){
 			digitalWrite (LED4, 1);
@@ -94,7 +97,7 @@ vx = 0 ;
 			digitalWrite (LED6, 0);
 			delayMicroseconds(1000);
 			}
-		if (step1 > step2){ // пиши через цикл while(1)
+		if (step1 / 2 > step2){ // пиши через цикл while(1)
 		for (int i = 0 ; i <step2 ; i++){
 			if (i % step1 / step2 == 0){
 			digitalWrite (LED6, 1);

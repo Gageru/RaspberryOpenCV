@@ -17,10 +17,10 @@ pinMode (LED10, OUTPUT) ; //dir
 pinMode (LED4, OUTPUT) ; 
 pinMode (LED5, OUTPUT) ; 
 
-//int step1 = 300;
+int step1 = 300;
 int step2 = 300;
 	//digitalWrite (LED7, 1);
-	/*digitalWrite (LED10, 0);
+	digitalWrite (LED10, 0);
 	
 	for(int i = 0 ; i < step1 ; i++) 
 	{
@@ -29,15 +29,15 @@ int step2 = 300;
 		digitalWrite (LED6, 0);
 		delayMicroseconds(1000);
 		
-	}*/
-	digitalWrite (LED5, 1);
+	}
+	/*digitalWrite (LED5, 1);
 	for(int i = 0 ; i < step2 ; i++) 
 	{
 		digitalWrite (LED4, 1);
 		delayMicroseconds(1000);
 		digitalWrite (LED4, 0);
 		delayMicroseconds(1000);
-	}
+	}*/
 	
 	
 return 0 ; 
