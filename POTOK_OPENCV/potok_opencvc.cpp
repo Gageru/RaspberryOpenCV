@@ -5,20 +5,114 @@
 #include <cstdio>
 #include <thread>
 #include <mutex>
-
+#include <wiringPi.h>
+#include <cstdio>
 using namespace std;
 using namespace cv;
+//drv8825
+#define LED6 0
+#define  LED10 2
+//a4898
+#define  LED4 4
+#define LED5 5
+
+
 
 Mat frm;
 mutex mtx;
 int c=0;
 int fps = 0;
+int step1, step2;
+int xb,yb;
+double a1,a2,vx;
 bool isMainRunning;
 bool is_frame_prepare;
+bool dir1, dir2;
+
 string window_name = "Video";
 
 void GoStep(int &x, int &y){
-	
+vx = 0 ;
+	if (x <= xb && y <= yb){ //относительно прошлой переменной
+		dir1 = 1;
+		dir2 = 1;
+		a1 = 4,2 * x / 80;
+		a1 = 4.2 - a1 ;
+		step1 = a1 * 4096 / 360;
+		a2 = 3.15 * y / 60;
+		a2 = 3.15 - a2;
+		step2 = a2 * 2048 / 360 ; 
+		vx = 1;
+	}
+	if (x >= xb && y <= yb){
+		dir1 = 0;
+		dir2 = 1;
+		a1 = 4.2 * x /80;
+		a1 = 8.2 - a1;
+		step1 = a1 * 4096 / 360 ;
+		a2 = 3.15 * y / 60;
+		a2 = 3.15 - a2;
+		step2 = a2 * 2048 / 360 ; 
+		vx = 1;
+	}
+	if (x <= xb && y >= yb){
+		dir1 = 1;
+		dir2 = 0; 
+		a1 = 4,2 * x / 80;
+		a1 = 4.2 - a1 ;
+		step1 = a1 * 4096 / 360;
+		a2 = 3.15 * y / 60;
+		a2 = a2 - 6.3;
+		step2 = a2 * 2048 / 360 ;
+		vx = 1;
+		
+	}
+	if (x >= xb && y >= yb){
+		dir1 = 0;
+		dir2 = 0; 
+		a1 = 4,2 * x / 80;
+		a1 = a1 - 8.41 ;
+		step1 = a1 * 4096 / 360;
+		a2 = 3.15 * y / 60;
+		a2 = a2 - 6.3;
+		step2 = a2 * 2048 / 360 ;
+		vx = 1;
+	}
+	if (vx == 1){
+		digitalWrite (LED5, dir1);
+		digitalWrite (LED10, dir2);
+		if (step1  <= step2) // пиши через цикл while(1)
+		for (int i = 0 ; i <step2 ; i++){
+			if (i % step2 / step1 == 0){
+			digitalWrite (LED4, 1);
+			}
+			digitalWrite (LED6, 1);
+			delayMicroseconds(1000);
+			if (i % step2 / step1 == 0){
+			digitalWrite (LED4, 0);
+			} 
+			digitalWrite (LED6, 0);
+			delayMicroseconds(1000);
+			}
+		if (step1 > step2){ // пиши через цикл while(1)
+		for (int i = 0 ; i <step2 ; i++){
+			if (i % step1 / step2 == 0){
+			digitalWrite (LED6, 1);
+			}
+			digitalWrite (LED4, 1);
+			delayMicroseconds(1000);
+			if (i % step1 / step2 == 0){
+			digitalWrite (LED6, 0);
+			} 
+			digitalWrite (LED4, 0);
+			delayMicroseconds(1000);
+			}
+		}
+
+	}
+vx = 0 ;
+xb = x;
+yb = y;
 }
 void run_capture()
 {
@@ -98,8 +192,10 @@ void detect_and_display()
 			}			
 			resize(frame,buf,Size(),3.6,3.3);
 			putText(buf, cv::format("FPS=%d", fps ), Point(15, 30), FONT_HERSHEY_SIMPLEX, 0.5, Scalar(0,255,0));
+			putText(buf, cv::format("FPS=%d", y ), Point(15, 45), FONT_HERSHEY_SIMPLEX, 0.5, Scalar(0,255,0));
 			
             imshow(window_name, buf);
+            
             GoStep(x,y);
             c = waitKey(1);
             if( (char)c == 'c' ) {
@@ -116,6 +212,13 @@ void detect_and_display()
 
 int main()
 {
+	xb = 80;
+	yb = 60;
+	wiringPiSetup () ; //инициализируем библиотеку 
+	pinMode (LED6, OUTPUT) ; //step
+	pinMode (LED10, OUTPUT) ; //dir
+	pinMode (LED4, OUTPUT) ; 
+	pinMode (LED5, OUTPUT) ; 
     is_frame_prepare = false;
     isMainRunning = true;
     thread cap(run_capture);

@@ -6,10 +6,12 @@ using namespace std;
 int main()
 {
  CascadeClassifier face_cascade;
- face_cascade.load("/home/pi/Desktop/cascade/cascade.xml");
+ face_cascade.load("/home/pi/Documents/opencv-master/data/haarcascades/haarcascade_frontalface_default.xml");
 
  Mat img;
  VideoCapture cap(0);
+ cap.set(CAP_PROP_FRAME_WIDTH, 1440);
+ cap.set(CAP_PROP_FRAME_HEIGHT, 1080);  
  cap.set(CAP_PROP_EXPOSURE, 0);
  int frameCounter = 0;
  int tick = 0;
