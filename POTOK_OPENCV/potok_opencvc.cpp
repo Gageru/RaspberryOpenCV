@@ -2,7 +2,7 @@
 #include "opencv2/imgproc/imgproc.hpp"
 #include <opencv2/opencv.hpp>
 #include <iostream>
-#include <cstdio>
+#include <cmath>
 #include <thread>
 #include <mutex>
 #include <wiringPi.h>
@@ -22,7 +22,7 @@ Mat frm;
 mutex mtx;
 int c=0;
 int fps = 0;
-int step1, step2;
+double step1, step2;
 int xb,yb;
 double a1,a2,vx;
 bool isMainRunning;
@@ -33,11 +33,10 @@ string window_name = "Video";
 
 void GoStep(int &x, int &y){
 vx = 0 ;
-cout << x << " " << y << endl;
 	if (x <= xb && y <= yb){ //относительно прошлой переменной
 		dir1 = 1;
 		dir2 = 1;
-		a1 = 4,2 * x / 80;
+		a1 = 4.2 * x / 80;
 		a1 = 4.2 - a1 ;
 		step1 = a1 * 4096 / 360;
 		a2 = 3.15 * y / 60;
@@ -59,7 +58,7 @@ cout << x << " " << y << endl;
 	if (x <= xb && y >= yb){
 		dir1 = 1;
 		dir2 = 0; 
-		a1 = 4,2 * x / 80;
+		a1 = 4.2 * x / 80;
 		a1 = 4.2 - a1 ;
 		step1 = a1 * 4096 / 360;
 		a2 = 3.15 * y / 60;
@@ -71,7 +70,7 @@ cout << x << " " << y << endl;
 	if (x >= xb && y >= yb){
 		dir1 = 0;
 		dir2 = 0; 
-		a1 = 4,2 * x / 80;
+		a1 = 4.2 * x / 80;
 		a1 = a1 - 4.2 ;
 		step1 = a1 * 4096 / 360;
 		a2 = 3.15 * y / 60;
@@ -79,40 +78,47 @@ cout << x << " " << y << endl;
 		step2 = a2 * 2048 / 360 ;
 		vx = 1;
 	}
-cout << a1 << " " << a2 << endl;
-cout << step1 << " " << step2 << endl;
+cout << step1 << " //" << step2 << endl;
+cout << (step2 / (step1 / 2)) << " //" << ((step1 / 2) / step2  )  << endl;
 	if (vx == 1){
 		digitalWrite (LED5, dir1);
 		digitalWrite (LED10, dir2);
-		if (step1 / 2  <= step2) // пиши через цикл while(1)
+		if (abs(step1 / 2)  <= abs(step2)) {
+		int ot = int (round(step2 / (step1 / 2)));
 		for (int i = 0 ; i <step2 ; i++){
-			if (i % step2 / step1 == 0){
+			if (i % ot  == 0){
 			digitalWrite (LED4, 1);
 			}
 			digitalWrite (LED6, 1);
 			delayMicroseconds(1000);
-			if (i % step2 / step1 == 0){
+			if (i % ot == 0){
 			digitalWrite (LED4, 0);
 			} 
 			digitalWrite (LED6, 0);
 			delayMicroseconds(1000);
 			}
-		if (step1 / 2 > step2){ // пиши через цикл while(1)
-		for (int i = 0 ; i <step2 ; i++){
-			if (i % step1 / step2 == 0){
+		}
+		if (abs(step1 / 2)  > abs(step2)){
+		int ot = int (round((step1 / 2) / step2)) ;
+		for (int i = 0 ; i <step1 ; i++){
+			if (i % ot == 0){
 			digitalWrite (LED6, 1);
 			}
 			digitalWrite (LED4, 1);
 			delayMicroseconds(1000);
-			if (i % step1 / step2 == 0){
+			if (i % ot == 0){
 			digitalWrite (LED6, 0);
 			} 
 			digitalWrite (LED4, 0);
 			delayMicroseconds(1000);
 			}
 		}
-
 	}
+		
+a1 = 0;
+a2 = 0;
+step1 = 0;
+step2 = 0;	
 vx = 0 ;
 xb = x;
 yb = y;
@@ -198,8 +204,9 @@ void detect_and_display()
 			putText(buf, cv::format("FPS=%d", y ), Point(15, 45), FONT_HERSHEY_SIMPLEX, 0.5, Scalar(0,255,0));
 			
             imshow(window_name, buf);
-            
-            GoStep(x,y);
+            if (faces.size() != 0){
+				GoStep(x,y);
+			}
             c = waitKey(1);
             if( (char)c == 'c' ) {
                 break;
