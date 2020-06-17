@@ -10,8 +10,8 @@ int main()
 
  Mat img;
  VideoCapture cap(0);
- cap.set(CAP_PROP_FRAME_WIDTH, 1440);
- cap.set(CAP_PROP_FRAME_HEIGHT, 1080);  
+ cap.set(CAP_PROP_FRAME_WIDTH, 160);
+ cap.set(CAP_PROP_FRAME_HEIGHT, 120);  
  cap.set(CAP_PROP_EXPOSURE, 0);
  int frameCounter = 0;
  int tick = 0;
