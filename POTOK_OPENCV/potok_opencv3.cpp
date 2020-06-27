@@ -46,7 +46,7 @@ void Go_Step(){
 				dir2 = 1;
 				a1 = 4.2 * x / 80;
 				a1 = 4.2 - a1 ;
-				step1 = a1 * 4096 / 360;
+				step1 = a1 * 2048 / 360;
 				a2 = 3.15 * y / 60;
 				a2 = 3.15 - a2;
 				step2 = a2 * 2048 / 360 ; 
@@ -57,7 +57,7 @@ void Go_Step(){
 				dir2 = 1;
 				a1 = 4.2 * x /80;
 				a1 = a1 - 4.2;
-				step1 = a1 * 4096 / 360 ;
+				step1 = a1 * 2048 / 360 ;
 				a2 = 3.15 * y / 60;
 				a2 = 3.15 - a2;
 				step2 = a2 * 2048 / 360 ; 
@@ -68,7 +68,7 @@ void Go_Step(){
 				dir2 = 0; 
 				a1 = 4.2 * x / 80;
 				a1 = 4.2 - a1 ;
-				step1 = a1 * 4096 / 360;
+				step1 = a1 * 2048 / 360;
 				a2 = 3.15 * y / 60;
 				a2 = a2 - 3.15;
 				step2 = a2 * 2048 / 360 ;
@@ -79,7 +79,7 @@ void Go_Step(){
 				dir2 = 0; 
 				a1 = 4.2 * x / 80;
 				a1 = a1 - 4.2 ;
-				step1 = a1 * 4096 / 360;
+				step1 = a1 * 2048 / 360;
 				a2 = 3.15 * y / 60;
 				a2 = a2 - 3.15;
 				step2 = a2 * 2048 / 360 ;
@@ -140,8 +140,8 @@ void return_x(){
 void run_capture()
 {
     VideoCapture capture(0);
-    capture.set(CAP_PROP_FRAME_WIDTH, 160);
-    capture.set(CAP_PROP_FRAME_HEIGHT, 120);  
+    capture.set(CAP_PROP_FRAME_WIDTH, w);
+    capture.set(CAP_PROP_FRAME_HEIGHT, h);  
    
     int count = 0;
     int tick = 0;

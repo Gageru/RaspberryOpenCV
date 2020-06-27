@@ -20,7 +20,7 @@ pinMode (LED5, OUTPUT) ;
 int step1 = 300;
 int step2 = 300;
 	//digitalWrite (LED7, 1);
-	digitalWrite (LED10, 1);
+	digitalWrite (LED10, 0);
 	
 	for(int i = 0 ; i < step1 ; i++) 
 	{
